@@ -32,12 +32,32 @@
 
 ## 📂 项目结构
 
-```bash   ”“bash
+```bash   ”“bash   “bash”;“bash
 .
 ├── alerts/                  # 自定义告警规则
-├── dashboards/              # Grafana Dashboard JSON 模板
+├── dashboards/              # Grafana Dashboard JSON 模板├──dashboards/ # Grafana Dashboard JSON
 ├── docs/                    # 架构与部署文档
 ├── examples/                # 示例应用部署文件
 ├── helm/                    # Helm Chart 自定义配置
 ├── scripts/                 # 一键部署脚本
 └── Makefile                 # 快速操作入口
+
+🚀 快速开始
+前置条件：
+
+已配置好的 Kubernetes 集群 (1.20+)已配置好的 Kubernetes 集群 (1.20 )
+Helm 3.0+ 已安装   Helm 3.0  已安装
+一键部署：
+
+# 克隆项目
+git clone https://github.com/Adore-hub/k8s-monitoring-platform.git
+cd k8s-monitoring-platform
+
+# 执行部署脚本
+make install   使安装
+# 或者
+./scripts/deploy.sh   /脚本/ deploy.sh
+详细部署步骤请参考 部署文档。
+
+📸 预览
+(建议在此处放置 Grafana Dashboard 的截图)
