@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: node-resource-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack # 确保 Prometheus 能识别这个规则
+spec:
+  groups:
+  - name: node-resource-alerts
+    rules:
+    # 告警：节点 CPU 使用率过高 (> 80%)
+    - alert: NodeCPUHigh
+      expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+      for: 5m
+      labels:
+        severity: warning
+        level: P2
+      annotations:
+        summary: "节点 CPU 使用率过高: {{ $labels.instance }}"
+        description: "节点 {{ $labels.instance }} CPU 使用率超过 80%，当前值: {{ $value | printf \"%.2f\" }}%"
+
+    # 告警：节点内存使用率过高 (> 85%)
+    - alert: NodeMemoryHigh
+      expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+      for: 5m
+      labels:
+        severity: critical
+        level: P1
+      annotations:
+        summary: "节点内存即将耗尽: {{ $labels.instance }}"
+        description: "节点 {{ $labels.instance }} 内存使用率超过 85%，当前值: {{ $value | printf \"%.2f\" }}%"
+
+    # 告警：磁盘预计 24 小时内耗尽
+    - alert: NodeDiskWillFillIn24Hours
+      expr: predict_linear(node_filesystem_avail_bytes{mountpoint="/"}[1h], 24*3600) < 0
+      for: 1h
+      labels:
+        severity: critical
+        level: P0
+      annotations:
+        summary: "磁盘空间预测耗尽: {{ $labels.instance }}"
+        description: "基于过去 1 小时的增长率，节点 {{ $labels.instance }} 的磁盘将在 24 小时内耗尽。"
