@@ -1,0 +1,34 @@
+```yaml
+# 这是 kube-prometheus-stack 的自定义配置
+# 用于覆盖默认的 Helm Values
+
+# Prometheus 配置
+prometheus:
+  prometheusSpec:
+    # 保留数据 15 天
+    retention: 15d
+    # 资源限制
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 2
+        memory: 4Gi
+    # 启用自动发现 ServiceMonitor
+    serviceMonitorSelectorNilUsesHelmValues: false
+    
+# Alertmanager 配置
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
+# Grafana 配置
+grafana:
+  adminPassword: prom-operator
+  service:
+    type: ClusterIP
+  # 如果有额外的 Dashboard JSON 文件，可以在这里配置
