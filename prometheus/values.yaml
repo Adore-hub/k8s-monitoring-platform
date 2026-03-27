@@ -1,16 +1,8 @@
-grafana:
-  adminPassword: prom-operator
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager-operated.monitoring.svc:9093
 
-alertmanager:
-  enabled: true
-
-prometheus:
-  prometheusSpec:
-    retention: 7d
-    serviceMonitorSelectorNilUsesHelmValues: false
-
-nodeExporter:
-  enabled: true
-
-kubeStateMetrics:
-  enabled: true
+ruleFiles:
+  - /etc/prometheus/rules/*.yaml
