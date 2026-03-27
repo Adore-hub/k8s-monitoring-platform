@@ -1,34 +1,53 @@
-```yaml
-# 这是 kube-prometheus-stack 的自定义配置
-# 用于覆盖默认的 Helm Values
-
-# Prometheus 配置
 prometheus:
   prometheusSpec:
-    # 保留数据 15 天
-    retention: 15d
-    # 资源限制
+    retention: 7d
     resources:
       requests:
-        cpu: 500m
-        memory: 1Gi
+        cpu: 200m
+        memory: 512Mi
       limits:
-        cpu: 2
-        memory: 4Gi
-    # 启用自动发现 ServiceMonitor
+        cpu: 1000m
+        memory: 2Gi
     serviceMonitorSelectorNilUsesHelmValues: false
-    
-# Alertmanager 配置
+    podMonitorSelectorNilUsesHelmValues: false
+    ruleSelectorNilUsesHelmValues: false
+
 alertmanager:
+  enabled: true
   alertmanagerSpec:
     resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
       limits:
         cpu: 500m
-        memory: 256Mi
+        memory: 512Mi
 
-# Grafana 配置
 grafana:
-  adminPassword: prom-operator
+  enabled: true
+  adminUser: admin
+  adminPassword: admin123
   service:
     type: ClusterIP
-  # 如果有额外的 Dashboard JSON 文件，可以在这里配置
+  persistence:
+    enabled: false
+
+nodeExporter:
+  enabled: true
+
+kubeStateMetrics:
+  enabled: true
+
+prometheus-node-exporter:
+  enabled: true
+
+defaultRules:
+  create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    configMapGeneration: true
+    general: true
+    kubeApiserver: true
+    kubePrometheusNodeAlerting: true
+    kubePrometheusNodeRecording: true
