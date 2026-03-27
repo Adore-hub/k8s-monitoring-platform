@@ -1,14 +1,31 @@
 {
-  "title": "Kubernetes Cluster Monitoring",
+  "uid": "k8s-monitoring-platform",
+  "title": "K8s Monitoring Platform",
+  "tags": ["kubernetes", "monitoring"],
+  "timezone": "browser",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "30s",
   "panels": [
     {
-      "type": "graph",
-      "title": "CPU Usage",
+      "type": "stat",
+      "title": "Cluster CPU Usage",
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_usage_seconds_total[5m]))"
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"
         }
-      ]
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "type": "stat",
+      "title": "Node Count",
+      "targets": [
+        {
+          "expr": "count(up{job=\"node-exporter\"})"
+        }
+      ],
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
     }
   ]
 }
