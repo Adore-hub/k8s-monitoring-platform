@@ -1,32 +1,38 @@
 apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule   孩子:PrometheusRule
+kind: PrometheusRule
 metadata:
-  name: pod-status-alerts
-  namespace: monitoring   名称空间:监控
-  labels:   标签:
-    release: kube-prometheus-stack
-spec:   规范:
-  groups:   组:
-  - name: pod-status-alerts
-    rules:   规则:
-    # 告警：Pod 频繁重启
-    - alert: PodCrashLooping
-      expr: increase(kube_pod_container_status_restarts_total[1h]) > 5
-      for: 5m   : 5米
-      labels:   标签:
-        severity: warning   严重性:警告
-        level: P2   水平:P2
-      annotations:   注释:
-        summary: "Pod 频繁重启: {{ $labels.namespace }}/{{ $labels.pod }}"
-        description: "Pod {{ $labels.pod }} 在过去 1 小时内重启了 {{ $value }} 次，请检查应用日志。"
+  name: pod-alerts
+  namespace: monitoring
+spec:
+  groups:
+    - name: pod.rules
+      rules:
+        - alert: PodCrashLooping
+          expr: increase(kube_pod_container_status_restarts_total[10m]) > 3
+          for: 5m
+          labels:
+            severity: critical
+            level: P0
+          annotations:
+            summary: "Pod is crashing repeatedly"
+            description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is restarting frequently."
 
-    # 告警：容器内存 OOM (Out of Memory)
-    - alert: ContainerOOMKilled
-      expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
-      for: 1m
-      labels:   标签:
-        severity: critical   严重性:关键
-        level: P1   水平:P1
-      annotations:   注释:
-        summary: "容器因内存不足被杀死: {{ $labels.namespace }}/{{ $labels.pod }}"
-        description: "容器 {{ $labels.container }} 因 OOM 被终止，请考虑增加内存限制或排查内存泄漏。"
+        - alert: PodNotReady
+          expr: kube_pod_status_ready{condition="true"} == 0
+          for: 5m
+          labels:
+            severity: warning
+            level: P1
+          annotations:
+            summary: "Pod is not ready"
+            description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is not ready."
+
+        - alert: PodMemoryHigh
+          expr: sum by (pod, namespace) (container_memory_working_set_bytes{container!=""}) / sum by (pod, namespace) (kube_pod_container_resource_limits{resource="memory"}) > 0.9
+          for: 5m
+          labels:
+            severity: warning
+            level: P1
+          annotations:
+            summary: "High memory usage in pod"
+            description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} memory usage exceeds 90%."
