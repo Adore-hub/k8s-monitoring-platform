@@ -5,59 +5,61 @@
 ![Prometheus](https://img.shields.io/badge/Prometheus-2.45%2B-orange)
 ![Grafana](https://img.shields.io/badge/Grafana-10.0%2B-orange)
 
-> 一个基于 Kubernetes 的企业级云原生监控告警平台。实现了从基础设施到业务应用的全链路可观测性，显著提升运维响应效率。
+> 基于 IaC 理念构建的企业级 Kubernetes 监控平台，支持 Prometheus + Grafana + Alertmanager + Exporters 的一体化部署，面向基础设施、集群组件与业务应用的端到端可观测性建设。
 
-## 📊 功能特性
+## 项目简介
 
-- ✅ **全链路监控**：覆盖 Node、Pod、Service 及业务应用层。
-- ✅ **智能告警体系**：基于 PromQL 的精细化告警，支持 P0/P1/P2 分级通知。
-- ✅ **可视化大屏**：定制化 Grafana Dashboard，实时展示集群健康状态。
-- ✅ **一键部署**：提供自动化脚本，将环境交付时间从小时级缩短至分钟级。
+`k8s-monitoring-platform` 是一个面向 Kubernetes 场景的开源监控平台方案，采用 Helm 与声明式配置实现监控体系的标准化、模块化和可复用。
 
-## 🧠 技术栈
+本项目主要解决以下问题：
 
-- **编排引擎**：Kubernetes
-- **监控核心**：Prometheus, Node Exporter, cAdvisor, kube-state-metrics
-- **可视化**：Grafana
-- **告警中心**：AlertManager (邮件/Webhook)
-- **包管理**：Helm
+- 监控组件安装复杂、配置分散
+- 告警规则难以统一管理
+- Dashboard 缺乏版本化和可维护性
+- 集群与业务指标割裂，无法形成完整可观测体系
+- 故障定位依赖人工排查，响应效率低
 
-## 📈 项目亮点
+通过本项目，可以实现：
 
-本项目源于生产级实践，经受了复杂业务场景的考验：
+- 一键部署监控平台
+- 分层级告警治理（Node / Pod / Business）
+- Grafana 可视化大屏展示
+- Prometheus 指标采集与规则管理
+- 面向企业级集群的可维护、可扩展监控实践
 
-- 🚀 **高承载**：稳定支撑 **3节点集群** 上运行的 **20+ 微服务**。
-- ⚡ **高效定位**：故障定位时间缩短约 **50%**，通过多维度指标快速锁定瓶颈。
-- 🎯 **精准告警**：通过精细化规则治理，告警误报率降低 **30%+**。
+## 核心特性
 
-## 📂 项目结构
+- **IaC 化管理**：监控规则、Dashboard、Helm Values 解耦，纳入 Git 版本管理
+- **自动化部署**：提供 `deploy.sh` 与 `Makefile`，支持一键部署
+- **分级告警策略**：支持 P0 / P1 / P2 分级告警
+- **多维度指标采集**：集成 Node Exporter、cAdvisor、kube-state-metrics
+- **可视化大屏**：Grafana Dashboard 覆盖集群健康、资源水位、业务状态
+- **预测性告警**：基于 `predict_linear` 等 PromQL 高级函数实现容量预测
+- **高可用设计**：适配 3 节点高可用 Kubernetes 集群
 
-```bash   ”“bash   “bash”;“bash
-.
-├── alerts/                  # 自定义告警规则
-├── dashboards/              # Grafana Dashboard JSON 模板├──dashboards/ # Grafana Dashboard JSON
-├── docs/                    # 架构与部署文档
-├── examples/                # 示例应用部署文件
-├── helm/                    # Helm Chart 自定义配置
-├── scripts/                 # 一键部署脚本
-└── Makefile                 # 快速操作入口
+## 技术栈
 
-🚀 快速开始
-前置条件：
+- Kubernetes
+- Helm
+- Prometheus
+- Alertmanager
+- Grafana
+- node-exporter
+- kube-state-metrics
+- cAdvisor
+- PromQL
+- Bash / Makefile
 
-已配置好的 Kubernetes 集群 (1.20+)已配置好的 Kubernetes 集群 (1.20 )
-Helm 3.0+ 已安装   Helm 3.0  已安装
-一键部署：
+## 项目结构
 
-# 克隆项目
-git clone https://github.com/Adore-hub/k8s-monitoring-platform.git
-cd k8s-monitoring-platform
-
-# 执行部署脚本
-make install   使安装
-# 或者
-./scripts/deploy.sh   /脚本/ deploy.sh
-详细部署步骤请参考 部署文档。
-
-📸 预览
-(建议在此处放置 Grafana Dashboard 的截图)
+```bash
+├── alerts                  # 告警规则配置
+├── dashboards              # Dashboard 说明文档
+├── docs                    # 架构、部署、告警、看板说明
+├── examples                # 示例业务应用
+├── grafana                 # Grafana Dashboard JSON
+├── helm                    # Helm 部署配置
+├── manifests               # 基础 Kubernetes 清单
+├── prometheus              # Prometheus 相关配置
+├── screenshots             # 项目截图
+├── scripts                 # 自动化部署脚本
