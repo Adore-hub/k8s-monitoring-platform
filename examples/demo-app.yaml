@@ -1,42 +1,32 @@
-# 这是一个模拟微服务部署的示例
-# 实际项目中，您可以部署 20 个类似的 Deployment 来验证监控效果
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: demo-microservice
+  name: demo-app
   namespace: default
-spec:   规范:
-  replicas: 3
+spec:
+  replicas: 2
   selector:
     matchLabels:
-      app: demo-microservice
+      app: demo-app
   template:
     metadata:
-      labels:   标签:
-        app: demo-microservice
+      labels:
+        app: demo-app
     spec:
       containers:
-      - name: app
-        image: nginx:alpine # 仅作演示，实际可替换为业务镜像
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: "50m"
-            memory: "64Mi"
-          limits:
-            cpu: "100m"
-            memory: "128Mi"
+        - name: demo-app
+          image: nginx:1.25
+          ports:
+            - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo-microservice   名称:demo-microservice
-  namespace: default   名称空间:默认
-spec:   规范:
-  selector:   选择器:
-    app: demo-microservice
+  name: demo-app
+  namespace: default
+spec:
+  selector:
+    app: demo-app
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 80
       targetPort: 80
