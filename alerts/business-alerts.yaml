@@ -26,3 +26,34 @@ spec:
           annotations:
             summary: "High service latency"
             description: "Service {{ $labels.service }} p95 latency is above 1s."
+
+        - alert: ServiceQPSLow
+          expr: |
+            sum by (service) (
+              rate(http_requests_total[5m])
+            ) < 1
+          for: 10m
+          labels:
+            severity: info
+            level: P2 # 一般提示
+          annotations:
+            summary: "Service Traffic Low"
+            description: "Service {{ $labels.service }} has very low traffic (QPS < 1) for 10 minutes. Check if upstream is healthy."
+
+        - alert: ServiceQPSSpike
+          expr: |
+            sum by (service) (
+              rate(http_requests_total[5m])
+            ) 
+            / 
+            avg by (service) (
+              rate(http_requests_total[1h])
+            ) 
+            > 3
+          for: 2m
+          labels:
+            severity: warning
+            level: P1 # 重要告警
+          annotations:
+            summary: "Service Traffic Spike"
+            description: "Service {{ $labels.service }} QPS has increased by more than 3x compared to the 1h average."
