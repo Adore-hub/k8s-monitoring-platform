@@ -185,11 +185,42 @@ kubectl get svc -n monitoring
 
 ## 截图展示
 
-- Prometheus Targets 监控采集状态
+所有截图统一存放至项目 screenshots/ 目录下，以下为项目实际运行效果展示：
+1. Prometheus Targets 采集状态
+监控采集链路全量健康，节点、集群组件采集目标正常上线，保障监控数据完整采集：
 
-- Grafana 集群监控大屏
+![Prometheus采集目标状态](screenshots/prometheus-targets.png)
 
-- Alertmanager 告警管理面板
+2. Grafana 集群总览监控大屏
+集群全局资源水位、组件健康状态、Pod与节点资源分布一站式可视化展示：
+
+![Grafana集群总览大屏](screenshots/grafana-k8s-overview.png)
+
+3. Grafana 节点资源监控大屏
+单节点CPU、内存、磁盘、网络等基础设施指标精细化监控，直观查看节点负载：
+
+![Grafana节点监控大屏](screenshots/grafana-node-monitor.png)
+
+4. Grafana Pod/容器监控大屏
+Pod与容器级别资源占用、运行状态、重启次数等核心指标监控，定位微服务异常：
+
+![Grafana Pod监控大屏](screenshots/grafana-pod-monitor.png)
+
+5. Alertmanager 活跃告警面板
+告警统一收敛、分组管理，清晰展示集群内异常告警信息，支撑故障响应：
+
+![Alertmanager告警面板](screenshots/alertmanager-alerts.png)
+
+6. 告警规则库列表
+内置K8s原生告警规则+自定义分级告警规则，全量告警策略可管控、可扩展：
+
+![Prometheus告警规则列表](screenshots/alertmanager-rules.png)
+
+7. 监控组件运行状态
+3节点集群下，所有监控组件稳定Running，部署架构高可用：
+
+![监控组件运行状态](screenshots/all-components-running.png)
+
 
 ## 贡献指南
 
