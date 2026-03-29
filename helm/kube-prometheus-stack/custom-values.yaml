@@ -1,53 +1,39 @@
-prometheus:
-  prometheusSpec:
-    retention: 7d
-    resources:
-      requests:
-        cpu: 200m
-        memory: 512Mi
-      limits:
-        cpu: 1000m
-        memory: 2Gi
-    serviceMonitorSelectorNilUsesHelmValues: false
-    podMonitorSelectorNilUsesHelmValues: false
-    ruleSelectorNilUsesHelmValues: false
-
-alertmanager:
-  enabled: true
-  alertmanagerSpec:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 128Mi
-      limits:
-        cpu: 500m
-        memory: 512Mi
-
 grafana:
   enabled: true
-  adminUser: admin
   adminPassword: admin123
-  service:
-    type: ClusterIP
-  persistence:
-    enabled: false
-
-nodeExporter:
-  enabled: true
-
-kubeStateMetrics:
-  enabled: true
-
-prometheus-node-exporter:
-  enabled: true
-
-defaultRules:
-  create: true
-  rules:
-    alertmanager: true
-    etcd: true
-    configMapGeneration: true
-    general: true
-    kubeApiserver: true
-    kubePrometheusNodeAlerting: true
-    kubePrometheusNodeRecording: true
+  # 关键：配置 Dashboard 提供者和自动导入
+  dashboardProviders:
+    dashboardproviders:
+      default:
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      # 集群总览大盘（ID:15758）
+      k8s-cluster:
+        gnetId: 15758
+        revision: 1
+        datasource: Prometheus
+      # 节点监控大盘（ID:1860）
+      node-exporter:
+        gnetId: 1860
+        revision: 22
+        datasource: Prometheus
+      # Pod 监控大盘（ID:12900）
+      pod-monitor:
+        gnetId: 12900
+        revision: 14
+        datasource: Prometheus
+      # 服务监控大盘（ID:4475）
+      service-monitor:
+        gnetId: 4475
+        revision: 5
+        datasource: Prometheus
